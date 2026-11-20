@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>비움채움</title>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EFE6CF;--paper:#FBF7EA;--olive:#4B5A2A;--tan:#D3CBB1;--ink:#3E3624;--mute:#6B6149;--clay:#F6D9B8;--clayink:#6E3416;--sage:#D9E3BE;--hot:#9A3F1E}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Gowun Batang',serif;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #8A9A5B;outline-offset:2px}
+.app{max-width:480px;margin:0 auto;padding:max(22px,env(safe-area-inset-top)) 16px 110px;position:relative;min-height:100vh}
+.hd{display:flex;align-items:center;gap:12px;margin:0 2px 8px}
+.logo{width:54px;height:54px;border-radius:18px;background:var(--olive);display:flex;align-items:center;justify-content:center;flex:none}
+h1{margin:0;font-size:30px;color:var(--olive);line-height:1.1}
+.sub{font-size:13px;color:var(--mute)}
+.chips{display:flex;gap:8px;margin:8px 2px 14px}
+.chip{flex:1;border-radius:16px;padding:10px 12px;font-size:14px;background:var(--clay);color:var(--clayink)}
+.chip b{display:block;font-size:20px}
+.chip.g{background:var(--sage);color:#34431C}
+.tabs{display:flex;gap:4px;margin-left:2px;overflow-x:auto}
+.tab{flex:1;border:0;padding:10px 6px;border-radius:12px 12px 0 0;background:var(--tan);font-size:14px;min-height:44px;white-space:nowrap}
+.tab.on{background:var(--paper);font-weight:700}
+.paper{background:var(--paper);border-radius:0 14px 14px 14px;padding:10px 14px 16px;box-shadow:0 3px 10px rgba(70,55,30,.15);min-height:240px}
+.subs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px}
+.sb{flex:none;border:1.5px solid var(--tan);background:transparent;border-radius:999px;padding:6px 12px;font-size:14px;min-height:36px}
+.sb.on{background:var(--olive);border-color:var(--olive);color:#fff}
+.row{display:grid;grid-template-columns:42px 1fr auto;gap:4px 12px;align-items:center;padding:12px 0;border-bottom:1.5px dashed #CFC6A6}
+.ic{width:42px;height:42px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:22px}
+.nm b{font-size:17px;display:block;overflow-wrap:anywhere}
+.nm small,.r small{font-size:12px;color:var(--mute)}
+.r{text-align:right;font-size:13px;color:var(--mute)}
+.q{display:flex;align-items:center;justify-content:flex-end;gap:6px;color:var(--olive);font-weight:700;font-size:17px}
+.q button{width:34px;height:34px;border-radius:50%;border:0;background:var(--bg);font-size:18px}
+.hot{color:var(--hot);font-weight:700}
+.act{grid-column:2/4;display:flex;gap:8px}
+.act button{border:1.5px solid var(--tan);background:transparent;border-radius:999px;padding:4px 12px;font-size:13px;min-height:36px}
+.empty{padding:36px 8px;text-align:center;color:var(--mute)}
+.fab{position:fixed;right:max(16px,calc(50% - 224px));bottom:max(22px,env(safe-area-inset-bottom));height:56px;padding:0 22px;border-radius:28px;border:0;background:var(--olive);color:#fff;font-size:17px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.add{display:flex;gap:8px;margin-bottom:10px}
+.add input{flex:1;min-width:0}
+input,select,textarea{width:100%;border:1.5px solid var(--tan);background:#fff;border-radius:12px;padding:10px 12px;min-height:44px}
+.btn{border:0;border-radius:12px;background:var(--olive);color:#fff;padding:0 16px;min-height:44px;font-weight:700}
+.btn.ghost{background:var(--tan);color:var(--ink)}
+.btn.del{background:#F3D3C6;color:var(--hot)}
+.shop{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1.5px dashed #CFC6A6}
+.shop input[type=checkbox]{width:26px;height:26px;min-height:0;flex:none;accent-color:var(--olive)}
+.shop label{flex:1;font-size:17px;overflow-wrap:anywhere}
+.shop.done label{text-decoration:line-through;color:var(--mute)}
+.shop small{display:block;font-size:12px;color:var(--mute)}
+.shop .x{border:0;background:transparent;font-size:18px;min-width:40px;min-height:40px}
+dialog{border:0;border-radius:20px;padding:20px;width:min(440px,92vw);background:var(--paper);color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(62,54,36,.55)}
+dialog h2{margin:0 0 12px;font-size:22px;color:var(--olive)}
+.f{display:grid;gap:10px}
+.f label{display:grid;gap:4px;font-size:14px;color:var(--mute)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.time{font-size:13px;color:var(--mute)}
+.btns{display:flex;gap:8px;margin-top:6px}.btns .btn{flex:1}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+.vine{position:fixed;right:max(-18px,calc(50% - 258px));bottom:70px;opacity:.4;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<svg class="vine" width="110" height="110" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 118 C58 80 66 50 100 20" stroke="#8A9A5B" stroke-width="3" fill="none"/><ellipse cx="78" cy="78" rx="18" ry="8" transform="rotate(-35 78 78)" fill="#A8B87A"/><ellipse cx="62" cy="96" rx="16" ry="7" transform="rotate(30 62 96)" fill="#8A9A5B"/><ellipse cx="92" cy="48" rx="15" ry="7" transform="rotate(-50 92 48)" fill="#A8B87A"/></svg>
+<div class="app">
+  <div class="hd">
+    <div class="logo"><svg width="34" height="34" viewBox="0 0 36 36" aria-hidden="true"><path d="M8 14h20l-2 16H10z" fill="#F6D9B8"/><path d="M12 14c0-6 12-6 12 0" stroke="#F6D9B8" stroke-width="2.5" fill="none"/><path d="M18 11c0-4 3-6 6-6-1 4-3 6-6 6z" fill="#A8B87A"/></svg></div>
+    <div><h1>비움채움</h1><div class="sub">비우고, 채우고, 함께 챙겨요</div></div>
+  </div>
+  <div class="chips">
+    <div class="chip">🍽️ 먼저 비울 것<b id="cOut">0개</b></div>
+    <div class="chip g">🛒 곧 채울 것<b id="cIn">0개</b></div>
+  </div>
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <div class="paper" id="paper"></div>
+</div>
+<button class="fab" id="fab">🌿 새로 넣기</button>
+<div class="toast" id="toast" role="status"></div>
+
+<dialog id="dItem">
+  <h2 id="dTitle">새로 넣기</h2>
+  <form class="f" id="fItem" method="dialog">
+    <div class="two">
+      <label>분류<select id="fCat"></select></label>
+      <label>세부 분류<select id="fSub"></select></label>
+    </div>
+    <label>이름<input id="fName" required maxlength="40" placeholder="예: 우유"></label>
+    <div class="two">
+      <label>수량<input id="fQty" type="number" min="0" step="1" value="1" inputmode="numeric"></label>
+      <label>단위<input id="fUnit" maxlength="6" placeholder="개, 팩, 롤"></label>
+    </div>
+    <label>유통기한 (없으면 비워 두세요)<input id="fExp" type="date"></label>
+    <label>메모<input id="fMemo" maxlength="40" placeholder="예: 엄마 비타민"></label>
+    <div class="time" id="fTime"></div>
+    <div class="btns">
+      <button type="button" class="btn ghost" id="fCancel">취소</button>
+      <button type="button" class="btn del" id="fDel" hidden>삭제</button>
+      <button type="submit" class="btn" id="fSave">저장</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+// ===== 설정: Firebase 웹앱 설정값을 아래에 붙여 넣으세요. 비워 두면 이 기기에만 저장돼요(연습용). =====
+const FIREBASE_CONFIG = {
+  apiKey: "", authDomain: "", projectId: "", storageBucket: "", messagingSenderId: "", appId: ""
+};
+
+const CATS = {
+  '식재료': {icon:'🥬', subs:{'냉장':'🥬','냉동':'❄️','실온':'🥫','간식':'🍪','김치냉장고':'🫙','반찬':'🍱'}},
+  '약': {icon:'💊', subs:{'알약':'💊','물약':'🧪','보충제':'🌿'}},
+  '생활용품': {icon:'🧻', subs:{'소모품':'🧻','기기':'🔌'}}
+};
+const TABS = [...Object.keys(CATS), '쇼핑'];
+const TAB_ICON = {'식재료':'🥬','약':'💊','생활용품':'🧻','쇼핑':'🛒'};
+const S = {tab:'식재료', sub:'전체', items:[], shop:[], code:'home'};
+const $ = id => document.getElementById(id);
+const esc = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+const p2 = n => String(n).padStart(2,'0');
+const ft = ms => { const d = new Date(ms); return `${p2(d.getMonth()+1)}/${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`; };
+const dday = exp => { const t = new Date(); t.setHours(0,0,0,0); return Math.round((new Date(exp+'T00:00:00') - t) / 86400000); };
+let toastT;
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),1800); }
+
+// ===== 저장소: Firebase(가족 실시간 공유) 또는 이 기기(연습용) =====
+const useFB = !!FIREBASE_CONFIG.apiKey;
+const store = {
+  async init(code, onItems, onShop){
+    if(useFB){
+      const V='10.14.1', B=`https://www.gstatic.com/firebasejs/${V}/`;
+      const [{initializeApp},fs,{getAuth,signInAnonymously}] = await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-firestore.js'),import(B+'firebase-auth.js')]);
+      const app = initializeApp(FIREBASE_CONFIG);
+      try{ await signInAnonymously(getAuth(app)); }catch(e){ console.warn('익명 로그인 실패', e); }
+      const db = fs.getFirestore(app);
+      const col = k => fs.collection(db,'families',code,k);
+      const watch = (k,cb) => fs.onSnapshot(col(k), snap => cb(snap.docs.map(d=>({...d.data(),id:d.id}))), e => toast('연결에 문제가 있어요. 설정을 확인해 주세요.'));
+      watch('items',onItems); watch('shop',onShop);
+      this.put = (k,o) => fs.setDoc(fs.doc(col(k),o.id), o);
+      this.del = (k,id) => fs.deleteDoc(fs.doc(col(k),id));
+    } else {
+      const key = k => `bm_${code}_${k}`;
+      const data = {items:JSON.parse(localStorage.getItem(key('items'))||'[]'), shop:JSON.parse(localStorage.getItem(key('shop'))||'[]')};
+      const cbs = {items:onItems, shop:onShop};
+      const save = k => { localStorage.setItem(key(k), JSON.stringify(data[k])); cbs[k]([...data[k]]); };
+      this.put = async (k,o) => { const i=data[k].findIndex(x=>x.id===o.id); i<0?data[k].push(o):data[k][i]=o; save(k); };
+      this.del = async (k,id) => { data[k]=data[k].filter(x=>x.id!==id); save(k); };
+      onItems([...data.items]); onShop([...data.shop]);
+    }
+  }
+};
+
+// ===== 화면 =====
+function renderTabs(){
+  $('tabs').innerHTML = TABS.map(t=>`<button class="tab ${t===S.tab?'on':''}" role="tab" aria-selected="${t===S.tab}" data-t="${t}">${TAB_ICON[t]} ${t==='쇼핑'?'쇼핑 목록':t}</button>`).join('');
+}
+function renderChips(){
+  $('cOut').textContent = S.items.filter(i=>i.exp && dday(i.exp)<=3).length + '개';
+  $('cIn').textContent = S.shop.filter(s=>!s.done).length + '개';
+}
+function itemHTML(i){
+  const d = i.exp ? dday(i.exp) : null, hot = d!==null && d<=3;
+  const dt = d===null ? '유통기한 없음' : `${i.exp.slice(5).replace('-','/')} · ${d<0?`D+${-d} 지남`:d===0?'D-day':`D-${d}`}`;
+  const ic = (CATS[i.cat]?.subs[i.sub]) || CATS[i.cat]?.icon || '📦';
+  return `<div class="row" data-id="${i.id}"><div class="ic">${ic}</div>
+  <div class="nm"><b>${esc(i.name)}</b><small>${esc(i.sub)}${i.memo?' · '+esc(i.memo):''}<br>등록 ${ft(i.at)}</small></div>
+  <div class="r"><div class="q"><button data-a="m" aria-label="수량 줄이기">−</button><span>${esc(i.qty)}${esc(i.unit||'')}</span><button data-a="p" aria-label="수량 늘리기">+</button></div><div class="${hot?'hot':''}">${dt}</div></div>
+  <div class="act"><button data-a="e">✏️ 수정</button><button data-a="s">🛒 쇼핑에 담기</button>${Number(i.qty)===0?'<span class="hot" style="align-self:center;font-size:13px">다 썼어요</span>':''}</div></div>`;
+}
+function renderPaper(){
+  const p = $('paper');
+  if(S.tab==='쇼핑'){
+    const list = [...S.shop].sort((a,b)=>(a.done-b.done)||(b.at-a.at));
+    p.innerHTML = `<form class="add" id="shopForm"><input id="shopIn" maxlength="40" placeholder="사야 할 것 (예: 치약 2개)" aria-label="사야 할 것"><button class="btn" type="submit">추가</button></form>`
+      + (list.length ? list.map(s=>`<div class="shop ${s.done?'done':''}" data-id="${s.id}"><input type="checkbox" id="c${s.id}" ${s.done?'checked':''}><label for="c${s.id}">${esc(s.name)}<small>${ft(s.at)}</small></label><button class="x" data-a="x" aria-label="지우기">✕</button></div>`).join('') : '<div class="empty">🛒 사야 할 것을 적어 보세요.</div>')
+      + (S.shop.some(s=>s.done) ? '<div class="btns"><button class="btn ghost" id="clearDone">체크한 것 지우기</button></div>' : '');
+    return;
+  }
+  const subs = Object.keys(CATS[S.tab].subs);
+  let list = S.items.filter(i=>i.cat===S.tab && (S.sub==='전체'||i.sub===S.sub));
+  list.sort((a,b)=> (a.exp?0:1)-(b.exp?0:1) || (a.exp||'').localeCompare(b.exp||'') || b.at-a.at);
+  p.innerHTML = `<div class="subs">${['전체',...subs].map(s=>`<button class="sb ${s===S.sub?'on':''}" data-s="${s}">${s==='전체'?'전체':CATS[S.tab].subs[s]+' '+s} ${s==='전체'?S.items.filter(i=>i.cat===S.tab).length:S.items.filter(i=>i.cat===S.tab&&i.sub===s).length}</button>`).join('')}</div>`
+    + (list.length ? list.map(itemHTML).join('') : '<div class="empty">🌿 아직 비어 있어요.<br>아래 "새로 넣기"로 첫 물건을 적어 보세요.</div>');
+}
+function render(){ renderTabs(); renderChips(); renderPaper(); $('fab').hidden = S.tab==='쇼핑'; }
+
+// ===== 이벤트 =====
+$('tabs').onclick = e => { const b=e.target.closest('[data-t]'); if(b){ S.tab=b.dataset.t; S.sub='전체'; render(); } };
+$('paper').onclick = e => {
+  const sb = e.target.closest('[data-s]'); if(sb){ S.sub=sb.dataset.s; renderPaper(); return; }
+  if(e.target.id==='clearDone'){ S.shop.filter(s=>s.done).forEach(s=>store.del('shop',s.id)); return; }
+  const a = e.target.closest('[data-a]'); if(!a) return;
+  const row = a.closest('[data-id]'); const id = row.dataset.id;
+  if(a.dataset.a==='x'){ store.del('shop',id); return; }
+  const it = S.items.find(x=>x.id===id); if(!it) return;
+  if(a.dataset.a==='m'||a.dataset.a==='p'){ const q=Math.max(0,Number(it.qty)+(a.dataset.a==='p'?1:-1)); store.put('items',{...it,qty:q}); if(q===0) toast('다 썼어요. 쇼핑 목록에 담을까요?'); }
+  if(a.dataset.a==='e') openItem(it);
+  if(a.dataset.a==='s'){ store.put('shop',{id:uid(),name:it.name,done:false,at:Date.now()}); toast('쇼핑 목록에 담았어요'); }
+};
+$('paper').onchange = e => { if(e.target.type==='checkbox'){ const s=S.shop.find(x=>x.id===e.target.closest('[data-id]').dataset.id); if(s) store.put('shop',{...s,done:e.target.checked}); } };
+$('paper').onsubmit = e => { if(e.target.id==='shopForm'){ e.preventDefault(); const v=$('shopIn').value.trim(); if(v){ store.put('shop',{id:uid(),name:v,done:false,at:Date.now()}); } } };
+
+let editing = null;
+function fillSubs(){ $('fSub').innerHTML = Object.keys(CATS[$('fCat').value].subs).map(s=>`<option>${s}</option>`).join(''); }
+$('fCat').innerHTML = Object.keys(CATS).map(c=>`<option>${c}</option>`).join('');
+$('fCat').onchange = fillSubs;
+function openItem(it){
+  editing = it || null;
+  $('dTitle').textContent = it ? '수정하기' : '새로 넣기';
+  $('fCat').value = it ? it.cat : S.tab; fillSubs();
+  $('fSub').value = it ? it.sub : (S.sub!=='전체' ? S.sub : $('fSub').options[0].value);
+  $('fName').value = it?.name||''; $('fQty').value = it?.qty ?? 1; $('fUnit').value = it?.unit||'';
+  $('fExp').value = it?.exp||''; $('fMemo').value = it?.memo||'';
+  $('fTime').textContent = it ? `등록 시간 ${ft(it.at)}` : `등록 시간 ${ft(Date.now())} (자동)`;
+  $('fDel').hidden = !it;
+  $('dItem').showModal(); $('fName').focus();
+}
+$('fab').onclick = () => openItem(null);
+$('fCancel').onclick = () => $('dItem').close();
+$('fDel').onclick = () => { if(editing && confirm(`"${editing.name}"을(를) 삭제할까요?`)){ store.del('items',editing.id); $('dItem').close(); } };
+$('fItem').onsubmit = e => {
+  e.preventDefault();
+  const name = $('fName').value.trim(); if(!name) return;
+  const o = {id: editing?.id || uid(), cat:$('fCat').value, sub:$('fSub').value, name, qty:Math.max(0,Number($('fQty').value)||0), unit:$('fUnit').value.trim(), exp:$('fExp').value, memo:$('fMemo').value.trim(), at: editing?.at || Date.now()};
+  store.put('items',o); S.tab=o.cat; S.sub='전체'; render(); $('dItem').close(); toast('저장했어요');
+};
+
+render();
+store.init(S.code, v=>{S.items=v;render();}, v=>{S.shop=v;render();}).catch(e=>{console.error(e);toast('연결에 실패했어요');});
+</script>
+</body>
+</html>
