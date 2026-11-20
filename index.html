@@ -17,16 +17,19 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .logo{width:54px;height:54px;border-radius:18px;background:var(--olive);display:flex;align-items:center;justify-content:center;flex:none}
 h1{margin:0;font-size:30px;color:var(--olive);line-height:1.1}
 .sub{font-size:13px;color:var(--mute)}
+.ver{font-size:12px;font-weight:400;color:var(--mute);margin-left:6px;letter-spacing:.3px}
 .chips{display:flex;gap:8px;margin:8px 2px 14px}
-.chip{flex:1;border-radius:16px;padding:10px 12px;font-size:14px;background:var(--clay);color:var(--clayink)}
+.chip{flex:1;border:0;text-align:left;cursor:pointer;min-height:44px;border-radius:16px;padding:10px 12px;font-size:14px;background:var(--clay);color:var(--clayink)}
 .chip b{display:block;font-size:20px}
 .chip.g{background:var(--sage);color:#34431C}
 .tabs{display:flex;gap:4px;margin-left:2px;overflow-x:auto}
 .tab{flex:1;border:0;padding:10px 6px;border-radius:12px 12px 0 0;background:var(--tan);font-size:14px;min-height:44px;white-space:nowrap}
 .tab.on{background:var(--paper);font-weight:700}
 .paper{background:var(--paper);border-radius:0 14px 14px 14px;padding:10px 14px 16px;box-shadow:0 3px 10px rgba(70,55,30,.15);min-height:240px}
-.subs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px}
-.sb{flex:none;border:1.5px solid var(--tan);background:transparent;border-radius:999px;padding:6px 12px;font-size:14px;min-height:36px}
+.subs{display:grid;grid-template-columns:1.1fr repeat(3,1fr);gap:6px;padding:2px 0 12px}
+.sb{border:1.5px solid var(--tan);background:transparent;border-radius:14px;padding:6px 2px;font-size:13px;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.2;word-break:keep-all}
+.sb .e{font-size:20px}.sb small{font-size:12px;opacity:.8}
+.sb.all{font-size:18px;font-weight:700;gap:4px}.sb.all .e{font-size:30px}
 .sb.on{background:var(--olive);border-color:var(--olive);color:#fff}
 .row{display:grid;grid-template-columns:42px 1fr auto;gap:4px 12px;align-items:center;padding:12px 0;border-bottom:1.5px dashed #CFC6A6}
 .ic{width:42px;height:42px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:22px}
@@ -52,7 +55,7 @@ input,select,textarea{width:100%;border:1.5px solid var(--tan);background:#fff;b
 .shop.done label{text-decoration:line-through;color:var(--mute)}
 .shop small{display:block;font-size:12px;color:var(--mute)}
 .shop .x{border:0;background:transparent;font-size:18px;min-width:40px;min-height:40px}
-dialog{border:0;border-radius:20px;padding:20px;width:min(440px,92vw);background:var(--paper);color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+dialog{max-height:88vh;overflow:auto;border:0;border-radius:20px;padding:20px;width:min(440px,92vw);background:var(--paper);color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.35)}
 dialog::backdrop{background:rgba(62,54,36,.55)}
 dialog h2{margin:0 0 12px;font-size:22px;color:var(--olive)}
 .f{display:grid;gap:10px}
@@ -60,6 +63,7 @@ dialog h2{margin:0 0 12px;font-size:22px;color:var(--olive)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .time{font-size:13px;color:var(--mute)}
 .btns{display:flex;gap:8px;margin-top:6px}.btns .btn{flex:1}
+.mode{margin:10px 4px 0;font-size:12px;color:var(--mute);text-align:center}
 .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.on{opacity:1}
 .vine{position:fixed;right:max(-18px,calc(50% - 258px));bottom:70px;opacity:.4;pointer-events:none}
@@ -71,17 +75,26 @@ dialog h2{margin:0 0 12px;font-size:22px;color:var(--olive)}
 <div class="app">
   <div class="hd">
     <div class="logo"><svg width="34" height="34" viewBox="0 0 36 36" aria-hidden="true"><path d="M8 14h20l-2 16H10z" fill="#F6D9B8"/><path d="M12 14c0-6 12-6 12 0" stroke="#F6D9B8" stroke-width="2.5" fill="none"/><path d="M18 11c0-4 3-6 6-6-1 4-3 6-6 6z" fill="#A8B87A"/></svg></div>
-    <div><h1>비움채움</h1><div class="sub">비우고, 채우고, 함께 챙겨요</div></div>
+    <div><h1>비움채움<span class="ver">Ver 2.0</span></h1><div class="sub">비우고, 채우고, 함께 챙겨요</div></div>
   </div>
   <div class="chips">
-    <div class="chip">🍽️ 먼저 비울 것<b id="cOut">0개</b></div>
-    <div class="chip g">🛒 곧 채울 것<b id="cIn">0개</b></div>
+    <button class="chip" id="chipOut">🍽️ 먼저 비울 것<b id="cOut">0개</b></button>
+    <button class="chip g" id="chipIn">🛒 쇼핑목록<b id="cIn">0개</b></button>
   </div>
   <div class="tabs" id="tabs" role="tablist"></div>
   <div class="paper" id="paper"></div>
+  <div class="mode" id="mode"></div>
 </div>
 <button class="fab" id="fab">🌿 새로 넣기</button>
 <div class="toast" id="toast" role="status"></div>
+
+<dialog id="dOut">
+  <h2>🍽️ 먼저 비울 것</h2>
+  <p class="time">유통기한을 적은 물건을 모아 보여줘요. 물건을 누르면 수정할 수 있어요.</p>
+  <div class="btns" style="margin:0 0 6px"><button type="button" class="btn ghost" id="outSort"></button></div>
+  <div id="outList"></div>
+  <div class="btns"><button type="button" class="btn ghost" id="outClose">닫기</button></div>
+</dialog>
 
 <dialog id="dItem">
   <h2 id="dTitle">새로 넣기</h2>
@@ -113,13 +126,13 @@ const FIREBASE_CONFIG = {
 };
 
 const CATS = {
-  '식재료': {icon:'🥬', subs:{'냉장':'🥬','냉동':'❄️','실온':'🥫','간식':'🍪','김치냉장고':'🫙','반찬':'🍱'}},
+  '식재료': {icon:'🥬', subs:{'냉장':'🥬','냉동':'❄️','김치냉장고':'🫙','실온':'🥫','반찬':'🍱','간식':'🍪'}},
   '약': {icon:'💊', subs:{'알약':'💊','물약':'🧪','보충제':'🌿'}},
   '생활용품': {icon:'🧻', subs:{'소모품':'🧻','기기':'🔌'}}
 };
 const TABS = [...Object.keys(CATS), '쇼핑'];
 const TAB_ICON = {'식재료':'🥬','약':'💊','생활용품':'🧻','쇼핑':'🛒'};
-const S = {tab:'식재료', sub:'전체', items:[], shop:[], code:'home'};
+const S = {tab:'식재료', sub:'전체', items:[], shop:[], code:'home', outAsc:true};
 const $ = id => document.getElementById(id);
 const esc = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,8);
@@ -135,9 +148,8 @@ const store = {
   async init(code, onItems, onShop){
     if(useFB){
       const V='10.14.1', B=`https://www.gstatic.com/firebasejs/${V}/`;
-      const [{initializeApp},fs,{getAuth,signInAnonymously}] = await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-firestore.js'),import(B+'firebase-auth.js')]);
+      const [{initializeApp},fs] = await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-firestore.js')]);
       const app = initializeApp(FIREBASE_CONFIG);
-      try{ await signInAnonymously(getAuth(app)); }catch(e){ console.warn('익명 로그인 실패', e); }
       const db = fs.getFirestore(app);
       const col = k => fs.collection(db,'families',code,k);
       const watch = (k,cb) => fs.onSnapshot(col(k), snap => cb(snap.docs.map(d=>({...d.data(),id:d.id}))), e => toast('연결에 문제가 있어요. 설정을 확인해 주세요.'));
@@ -158,7 +170,7 @@ const store = {
 
 // ===== 화면 =====
 function renderTabs(){
-  $('tabs').innerHTML = TABS.map(t=>`<button class="tab ${t===S.tab?'on':''}" role="tab" aria-selected="${t===S.tab}" data-t="${t}">${TAB_ICON[t]} ${t==='쇼핑'?'쇼핑 목록':t}</button>`).join('');
+  $('tabs').innerHTML = TABS.map(t=>`<button class="tab ${t===S.tab?'on':''}" role="tab" aria-selected="${t===S.tab}" data-t="${t}">${TAB_ICON[t]} ${t==='쇼핑'?'쇼핑목록':t}</button>`).join('');
 }
 function renderChips(){
   $('cOut').textContent = S.items.filter(i=>i.exp && dday(i.exp)<=3).length + '개';
@@ -185,7 +197,9 @@ function renderPaper(){
   const subs = Object.keys(CATS[S.tab].subs);
   let list = S.items.filter(i=>i.cat===S.tab && (S.sub==='전체'||i.sub===S.sub));
   list.sort((a,b)=> (a.exp?0:1)-(b.exp?0:1) || (a.exp||'').localeCompare(b.exp||'') || b.at-a.at);
-  p.innerHTML = `<div class="subs">${['전체',...subs].map(s=>`<button class="sb ${s===S.sub?'on':''}" data-s="${s}">${s==='전체'?'전체':CATS[S.tab].subs[s]+' '+s} ${s==='전체'?S.items.filter(i=>i.cat===S.tab).length:S.items.filter(i=>i.cat===S.tab&&i.sub===s).length}</button>`).join('')}</div>`
+  const cnt = x => S.items.filter(i=>i.cat===S.tab && (x==='전체'||i.sub===x)).length;
+  const rows = Math.ceil(subs.length/3);
+  p.innerHTML = `<div class="subs"><button class="sb all ${S.sub==='전체'?'on':''}" data-s="전체" style="grid-row:span ${rows}"><span class="e">${CATS[S.tab].icon}</span>전체<small>${cnt('전체')}개</small></button>${subs.map(x=>`<button class="sb ${x===S.sub?'on':''}" data-s="${x}"><span class="e">${CATS[S.tab].subs[x]}</span>${x}<small>${cnt(x)}</small></button>`).join('')}</div>`
     + (list.length ? list.map(itemHTML).join('') : '<div class="empty">🌿 아직 비어 있어요.<br>아래 "새로 넣기"로 첫 물건을 적어 보세요.</div>');
 }
 function render(){ renderTabs(); renderChips(); renderPaper(); $('fab').hidden = S.tab==='쇼핑'; }
@@ -230,6 +244,22 @@ $('fItem').onsubmit = e => {
   const o = {id: editing?.id || uid(), cat:$('fCat').value, sub:$('fSub').value, name, qty:Math.max(0,Number($('fQty').value)||0), unit:$('fUnit').value.trim(), exp:$('fExp').value, memo:$('fMemo').value.trim(), at: editing?.at || Date.now()};
   store.put('items',o); S.tab=o.cat; S.sub='전체'; render(); $('dItem').close(); toast('저장했어요');
 };
+
+function renderOut(){
+  const l = S.items.filter(i=>i.exp).sort((a,b)=>(S.outAsc?1:-1)*a.exp.localeCompare(b.exp) || a.name.localeCompare(b.name));
+  $('outSort').textContent = S.outAsc ? '유통기한 빠른 순 ▲' : '유통기한 느린 순 ▼';
+  $('outList').innerHTML = l.length ? l.map(i=>{
+    const d = dday(i.exp), hot = d<=3, ic = (CATS[i.cat]?.subs[i.sub]) || CATS[i.cat]?.icon || '📦';
+    const dt = `${i.exp.slice(5).replace('-','/')} · ${d<0?`D+${-d} 지남`:d===0?'D-day':`D-${d}`}`;
+    return `<div class="row" data-id="${i.id}" style="cursor:pointer"><div class="ic">${ic}</div><div class="nm"><b>${esc(i.name)}</b><small>${esc(i.cat)} · ${esc(i.sub)}</small></div><div class="r"><div class="q">${esc(i.qty)}${esc(i.unit||'')}</div><div class="${hot?'hot':''}">${dt}</div></div></div>`;
+  }).join('') : '<div class="empty">유통기한을 적은 물건이 아직 없어요.</div>';
+}
+$('chipOut').onclick = () => { renderOut(); $('dOut').showModal(); };
+$('chipIn').onclick = () => { S.tab='쇼핑'; S.sub='전체'; render(); window.scrollTo({top:0,behavior:'smooth'}); };
+$('outSort').onclick = () => { S.outAsc = !S.outAsc; renderOut(); };
+$('outClose').onclick = () => $('dOut').close();
+$('outList').onclick = e => { const r=e.target.closest('[data-id]'); if(!r) return; const it=S.items.find(x=>x.id===r.dataset.id); if(it){ $('dOut').close(); openItem(it); } };
+$('mode').textContent = useFB ? '🔄 가족과 실시간으로 연결돼 있어요' : '📱 이 기기에만 저장 중이에요 (Firebase 설정 전)';
 
 render();
 store.init(S.code, v=>{S.items=v;render();}, v=>{S.shop=v;render();}).catch(e=>{console.error(e);toast('연결에 실패했어요');});
