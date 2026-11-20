@@ -42,6 +42,13 @@ h1{margin:0;font-size:30px;color:var(--olive);line-height:1.1}
 .act{grid-column:2/4;display:flex;gap:8px}
 .act button{border:1.5px solid var(--tan);background:transparent;border-radius:999px;padding:4px 12px;font-size:13px;min-height:36px}
 .empty{padding:36px 8px;text-align:center;color:var(--mute)}
+.list{overflow-y:scroll;padding-right:6px;scrollbar-width:thin;scrollbar-color:var(--olive) var(--tan)}
+.list::-webkit-scrollbar{width:10px}
+.list::-webkit-scrollbar-track{background:var(--tan);border-radius:6px}
+.list::-webkit-scrollbar-thumb{background:var(--olive);border-radius:6px}
+.sortbar{display:flex;gap:6px;align-items:center;margin:0 0 6px;font-size:13px;color:var(--mute)}
+.so{border:1.5px solid var(--tan);background:transparent;border-radius:999px;padding:4px 12px;font-size:13px;min-height:36px}
+.so.on{background:var(--clay);border-color:var(--clayink);color:var(--clayink);font-weight:700}
 .fab{position:fixed;right:max(16px,calc(50% - 224px));bottom:max(22px,env(safe-area-inset-bottom));height:56px;padding:0 22px;border-radius:28px;border:0;background:var(--olive);color:#fff;font-size:17px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
 .add{display:flex;gap:8px;margin-bottom:10px}
 .add input{flex:1;min-width:0}
@@ -74,8 +81,8 @@ dialog h2{margin:0 0 12px;font-size:22px;color:var(--olive)}
 <svg class="vine" width="110" height="110" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 118 C58 80 66 50 100 20" stroke="#8A9A5B" stroke-width="3" fill="none"/><ellipse cx="78" cy="78" rx="18" ry="8" transform="rotate(-35 78 78)" fill="#A8B87A"/><ellipse cx="62" cy="96" rx="16" ry="7" transform="rotate(30 62 96)" fill="#8A9A5B"/><ellipse cx="92" cy="48" rx="15" ry="7" transform="rotate(-50 92 48)" fill="#A8B87A"/></svg>
 <div class="app">
   <div class="hd">
-    <div class="logo"><svg width="34" height="34" viewBox="0 0 36 36" aria-hidden="true"><path d="M8 14h20l-2 16H10z" fill="#F6D9B8"/><path d="M12 14c0-6 12-6 12 0" stroke="#F6D9B8" stroke-width="2.5" fill="none"/><path d="M18 11c0-4 3-6 6-6-1 4-3 6-6 6z" fill="#A8B87A"/></svg></div>
-    <div><h1>비움채움<span class="ver">Ver 2.0</span></h1><div class="sub">비우고, 채우고, 함께 챙겨요</div></div>
+    <div class="logo"><svg width="38" height="38" viewBox="0 0 36 36" aria-hidden="true"><path d="M9 15c0-10 18-10 18 0" stroke="#E9C98F" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M17 8c0-3 3-4 5-4-.5 3-2 4.5-5 4z" fill="#A8B87A"/><path d="M5 15h26l-3 15a2 2 0 0 1-2 1.6H10a2 2 0 0 1-2-1.6z" fill="#E9C98F"/><path d="M7 20h22M8 25h20M13 15l-1 16M18 15v16M23 15l1 16" stroke="#B98A4A" stroke-width="1.4" fill="none"/><path d="M5 15h26" stroke="#B98A4A" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+    <div><h1>비움채움<span class="ver">Ver 3.0</span></h1><div class="sub">비우고, 채우고, 함께 챙겨요</div></div>
   </div>
   <div class="chips">
     <button class="chip" id="chipOut">🍽️ 먼저 비울 것<b id="cOut">0개</b></button>
@@ -92,7 +99,7 @@ dialog h2{margin:0 0 12px;font-size:22px;color:var(--olive)}
   <h2>🍽️ 먼저 비울 것</h2>
   <p class="time">유통기한을 적은 물건을 모아 보여줘요. 물건을 누르면 수정할 수 있어요.</p>
   <div class="btns" style="margin:0 0 6px"><button type="button" class="btn ghost" id="outSort"></button></div>
-  <div id="outList"></div>
+  <div id="outList" class="list"></div>
   <div class="btns"><button type="button" class="btn ghost" id="outClose">닫기</button></div>
 </dialog>
 
@@ -120,24 +127,24 @@ dialog h2{margin:0 0 12px;font-size:22px;color:var(--olive)}
 </dialog>
 
 <script>
-// ===== 설정: Firebase 웹앱 설정값을 아래에 붙여 넣으세요. 비워 두면 이 기기에만 저장돼요(연습용). =====
+// ===== 설정: Firebase 웹앱 설정값 (비우면 이 기기에만 저장돼요) =====
 const FIREBASE_CONFIG = {
-  apiKey:"AIzaSyCouWXTOxoSUjs0WwOmSzUVEwO5lfseeLo",
-authDomain:"bium-chaeum.firebaseapp.com",
-projectId:"bium-chaeum",
-storageBucket:"bium-chaeum.firebasestorage.app",
-messagingSenderId:"309359763281",
-appId:"1:309359763281:web:d10b8c0e4226f0e1743d70"
+  apiKey: "AIzaSyCouWXTOxoSUjs0WwOmSzUVEwO5lfseeLo",
+  authDomain: "bium-chaeum.firebaseapp.com",
+  projectId: "bium-chaeum",
+  storageBucket: "bium-chaeum.firebasestorage.app",
+  messagingSenderId: "309359763281",
+  appId: "1:309359763281:web:d10b8c0e4226f0e1743d70"
 };
 
 const CATS = {
   '식재료': {icon:'🥬', subs:{'냉장':'🥬','냉동':'❄️','김치냉장고':'🫙','실온':'🥫','반찬':'🍱','간식':'🍪'}},
-  '약': {icon:'💊', subs:{'알약':'💊','물약':'🧪','보충제':'🌿'}},
+  '약': {icon:'💊', subs:{'알약':'💊','물약':'🧪','보충제':'🌿','파스':'🩹','기타':'📦'}},
   '생활용품': {icon:'🧻', subs:{'소모품':'🧻','기기':'🔌'}}
 };
 const TABS = [...Object.keys(CATS), '쇼핑'];
 const TAB_ICON = {'식재료':'🥬','약':'💊','생활용품':'🧻','쇼핑':'🛒'};
-const S = {tab:'식재료', sub:'전체', items:[], shop:[], code:'home', outAsc:true};
+const S = {tab:'식재료', sub:'전체', items:[], shop:[], code:'home', outAsc:true, sort:localStorage.getItem('bm_sort')||'at', toTop:false};
 const $ = id => document.getElementById(id);
 const esc = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,8);
@@ -190,29 +197,48 @@ function itemHTML(i){
   <div class="r"><div class="q"><button data-a="m" aria-label="수량 줄이기">−</button><span>${esc(i.qty)}${esc(i.unit||'')}</span><button data-a="p" aria-label="수량 늘리기">+</button></div><div class="${hot?'hot':''}">${dt}</div></div>
   <div class="act"><button data-a="e">✏️ 수정</button><button data-a="s">🛒 쇼핑에 담기</button>${Number(i.qty)===0?'<span class="hot" style="align-self:center;font-size:13px">다 썼어요</span>':''}</div></div>`;
 }
+function limit5(el){
+  if(!el) return; el.style.maxHeight='';
+  const rs=[...el.children]; if(rs.length<=5) return;
+  const h=rs.slice(0,5).reduce((a,r)=>a+r.offsetHeight,0); if(h) el.style.maxHeight=h+'px';
+}
 function renderPaper(){
+  const old=$('paper').querySelector('.list'); let st=old?old.scrollTop:0;
+  if(S.toTop){ st=0; S.toTop=false; }
+  renderPaperInner();
+  $('paper').querySelectorAll('.list').forEach(limit5);
+  const nl=$('paper').querySelector('.list'); if(nl) nl.scrollTop=st;
+}
+function renderPaperInner(){
   const p = $('paper');
   if(S.tab==='쇼핑'){
     const list = [...S.shop].sort((a,b)=>(a.done-b.done)||(b.at-a.at));
     p.innerHTML = `<form class="add" id="shopForm"><input id="shopIn" maxlength="40" placeholder="사야 할 것 (예: 치약 2개)" aria-label="사야 할 것"><button class="btn" type="submit">추가</button></form>`
-      + (list.length ? list.map(s=>`<div class="shop ${s.done?'done':''}" data-id="${s.id}"><input type="checkbox" id="c${s.id}" ${s.done?'checked':''}><label for="c${s.id}">${esc(s.name)}<small>${ft(s.at)}</small></label><button class="x" data-a="x" aria-label="지우기">✕</button></div>`).join('') : '<div class="empty">🛒 사야 할 것을 적어 보세요.</div>')
+      + (list.length ? '<div class="list">'+list.map(s=>`<div class="shop ${s.done?'done':''}" data-id="${s.id}"><input type="checkbox" id="c${s.id}" ${s.done?'checked':''}><label for="c${s.id}">${esc(s.name)}<small>${ft(s.at)}</small></label><button class="x" data-a="x" aria-label="지우기">✕</button></div>`).join('')+'</div>' : '<div class="empty">🛒 사야 할 것을 적어 보세요.</div>')
       + (S.shop.some(s=>s.done) ? '<div class="btns"><button class="btn ghost" id="clearDone">체크한 것 지우기</button></div>' : '');
     return;
   }
   const subs = Object.keys(CATS[S.tab].subs);
   let list = S.items.filter(i=>i.cat===S.tab && (S.sub==='전체'||i.sub===S.sub));
-  list.sort((a,b)=> (a.exp?0:1)-(b.exp?0:1) || (a.exp||'').localeCompare(b.exp||'') || b.at-a.at);
+  const CMP = {
+    at:(a,b)=>b.at-a.at,
+    name:(a,b)=>a.name.localeCompare(b.name,'ko')||b.at-a.at,
+    exp:(a,b)=>(a.exp?0:1)-(b.exp?0:1)||(a.exp||'').localeCompare(b.exp||'')||b.at-a.at
+  };
+  list.sort(CMP[S.sort]||CMP.at);
+  const sortbar = `<div class="sortbar"><span>정렬</span>${[['at','등록순'],['name','가나다순'],['exp','유통기한순']].map(([k,l])=>`<button class="so ${S.sort===k?'on':''}" data-o="${k}">${l}</button>`).join('')}</div>`;
   const cnt = x => S.items.filter(i=>i.cat===S.tab && (x==='전체'||i.sub===x)).length;
   const rows = Math.ceil(subs.length/3);
   p.innerHTML = `<div class="subs"><button class="sb all ${S.sub==='전체'?'on':''}" data-s="전체" style="grid-row:span ${rows}"><span class="e">${CATS[S.tab].icon}</span>전체<small>${cnt('전체')}개</small></button>${subs.map(x=>`<button class="sb ${x===S.sub?'on':''}" data-s="${x}"><span class="e">${CATS[S.tab].subs[x]}</span>${x}<small>${cnt(x)}</small></button>`).join('')}</div>`
-    + (list.length ? list.map(itemHTML).join('') : '<div class="empty">🌿 아직 비어 있어요.<br>아래 "새로 넣기"로 첫 물건을 적어 보세요.</div>');
+    + sortbar + (list.length ? '<div class="list">'+list.map(itemHTML).join('')+'</div>' : '<div class="empty">🌿 아직 비어 있어요.<br>아래 "새로 넣기"로 첫 물건을 적어 보세요.</div>');
 }
 function render(){ renderTabs(); renderChips(); renderPaper(); $('fab').hidden = S.tab==='쇼핑'; }
 
 // ===== 이벤트 =====
-$('tabs').onclick = e => { const b=e.target.closest('[data-t]'); if(b){ S.tab=b.dataset.t; S.sub='전체'; render(); } };
+$('tabs').onclick = e => { const b=e.target.closest('[data-t]'); if(b){ S.tab=b.dataset.t; S.sub='전체'; S.toTop=true; render(); } };
 $('paper').onclick = e => {
-  const sb = e.target.closest('[data-s]'); if(sb){ S.sub=sb.dataset.s; renderPaper(); return; }
+  const sb = e.target.closest('[data-s]'); if(sb){ S.sub=sb.dataset.s; S.toTop=true; renderPaper(); return; }
+  const so = e.target.closest('[data-o]'); if(so){ S.sort=so.dataset.o; localStorage.setItem('bm_sort',S.sort); S.toTop=true; renderPaper(); return; }
   if(e.target.id==='clearDone'){ S.shop.filter(s=>s.done).forEach(s=>store.del('shop',s.id)); return; }
   const a = e.target.closest('[data-a]'); if(!a) return;
   const row = a.closest('[data-id]'); const id = row.dataset.id;
@@ -223,7 +249,7 @@ $('paper').onclick = e => {
   if(a.dataset.a==='s'){ store.put('shop',{id:uid(),name:it.name,done:false,at:Date.now()}); toast('쇼핑 목록에 담았어요'); }
 };
 $('paper').onchange = e => { if(e.target.type==='checkbox'){ const s=S.shop.find(x=>x.id===e.target.closest('[data-id]').dataset.id); if(s) store.put('shop',{...s,done:e.target.checked}); } };
-$('paper').onsubmit = e => { if(e.target.id==='shopForm'){ e.preventDefault(); const v=$('shopIn').value.trim(); if(v){ store.put('shop',{id:uid(),name:v,done:false,at:Date.now()}); } } };
+$('paper').onsubmit = e => { if(e.target.id==='shopForm'){ e.preventDefault(); const v=$('shopIn').value.trim(); if(v){ store.put('shop',{id:uid(),name:v,done:false,at:Date.now()}); S.toTop=true; } } };
 
 let editing = null;
 function fillSubs(){ $('fSub').innerHTML = Object.keys(CATS[$('fCat').value].subs).map(s=>`<option>${s}</option>`).join(''); }
@@ -247,7 +273,7 @@ $('fItem').onsubmit = e => {
   e.preventDefault();
   const name = $('fName').value.trim(); if(!name) return;
   const o = {id: editing?.id || uid(), cat:$('fCat').value, sub:$('fSub').value, name, qty:Math.max(0,Number($('fQty').value)||0), unit:$('fUnit').value.trim(), exp:$('fExp').value, memo:$('fMemo').value.trim(), at: editing?.at || Date.now()};
-  store.put('items',o); S.tab=o.cat; S.sub='전체'; render(); $('dItem').close(); toast('저장했어요');
+  store.put('items',o); S.tab=o.cat; S.sub='전체'; if(!editing){ S.sort='at'; localStorage.setItem('bm_sort','at'); S.toTop=true; } render(); $('dItem').close(); toast('저장했어요');
 };
 
 function renderOut(){
@@ -258,14 +284,17 @@ function renderOut(){
     const dt = `${i.exp.slice(5).replace('-','/')} · ${d<0?`D+${-d} 지남`:d===0?'D-day':`D-${d}`}`;
     return `<div class="row" data-id="${i.id}" style="cursor:pointer"><div class="ic">${ic}</div><div class="nm"><b>${esc(i.name)}</b><small>${esc(i.cat)} · ${esc(i.sub)}</small></div><div class="r"><div class="q">${esc(i.qty)}${esc(i.unit||'')}</div><div class="${hot?'hot':''}">${dt}</div></div></div>`;
   }).join('') : '<div class="empty">유통기한을 적은 물건이 아직 없어요.</div>';
+  limit5($('outList'));
 }
-$('chipOut').onclick = () => { renderOut(); $('dOut').showModal(); };
-$('chipIn').onclick = () => { S.tab='쇼핑'; S.sub='전체'; render(); window.scrollTo({top:0,behavior:'smooth'}); };
+$('chipOut').onclick = () => { renderOut(); $('dOut').showModal(); limit5($('outList')); };
+$('chipIn').onclick = () => { S.tab='쇼핑'; S.sub='전체'; S.toTop=true; render(); window.scrollTo({top:0,behavior:'smooth'}); };
 $('outSort').onclick = () => { S.outAsc = !S.outAsc; renderOut(); };
 $('outClose').onclick = () => $('dOut').close();
 $('outList').onclick = e => { const r=e.target.closest('[data-id]'); if(!r) return; const it=S.items.find(x=>x.id===r.dataset.id); if(it){ $('dOut').close(); openItem(it); } };
 $('mode').textContent = useFB ? '🔄 가족과 실시간으로 연결돼 있어요' : '📱 이 기기에만 저장 중이에요 (Firebase 설정 전)';
 
+addEventListener('resize',()=>document.querySelectorAll('.list').forEach(limit5));
+if(document.fonts) document.fonts.ready.then(()=>document.querySelectorAll('.list').forEach(limit5));
 render();
 store.init(S.code, v=>{S.items=v;render();}, v=>{S.shop=v;render();}).catch(e=>{console.error(e);toast('연결에 실패했어요');});
 </script>
