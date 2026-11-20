@@ -46,7 +46,8 @@ h1{margin:0;font-size:30px;color:var(--olive);line-height:1.1}
 .list::-webkit-scrollbar{width:10px}
 .list::-webkit-scrollbar-track{background:var(--tan);border-radius:6px}
 .list::-webkit-scrollbar-thumb{background:var(--olive);border-radius:6px}
-.sortbar{display:flex;gap:6px;align-items:center;margin:0 0 6px;font-size:13px;color:var(--mute)}
+.sortbar{display:flex;gap:6px;align-items:center;margin:0 0 4px;font-size:13px;color:var(--mute)}
+.cap{font-size:12px;color:var(--mute);margin:0 0 6px 2px}
 .so{border:1.5px solid var(--tan);background:transparent;border-radius:999px;padding:4px 12px;font-size:13px;min-height:36px}
 .so.on{background:var(--clay);border-color:var(--clayink);color:var(--clayink);font-weight:700}
 .fab{position:fixed;right:max(16px,calc(50% - 224px));bottom:max(22px,env(safe-area-inset-bottom));height:56px;padding:0 22px;border-radius:28px;border:0;background:var(--olive);color:#fff;font-size:17px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
@@ -82,7 +83,7 @@ dialog h2{margin:0 0 12px;font-size:22px;color:var(--olive)}
 <div class="app">
   <div class="hd">
     <div class="logo"><svg width="38" height="38" viewBox="0 0 36 36" aria-hidden="true"><path d="M9 15c0-10 18-10 18 0" stroke="#E9C98F" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M17 8c0-3 3-4 5-4-.5 3-2 4.5-5 4z" fill="#A8B87A"/><path d="M5 15h26l-3 15a2 2 0 0 1-2 1.6H10a2 2 0 0 1-2-1.6z" fill="#E9C98F"/><path d="M7 20h22M8 25h20M13 15l-1 16M18 15v16M23 15l1 16" stroke="#B98A4A" stroke-width="1.4" fill="none"/><path d="M5 15h26" stroke="#B98A4A" stroke-width="2.2" stroke-linecap="round"/></svg></div>
-    <div><h1>비움채움<span class="ver">Ver 3.0</span></h1><div class="sub">비우고, 채우고, 함께 챙겨요</div></div>
+    <div><h1>비움채움<span class="ver">Ver 5.0</span></h1><div class="sub">비우고, 채우고, 함께 챙겨요</div></div>
   </div>
   <div class="chips">
     <button class="chip" id="chipOut">🍽️ 먼저 비울 것<b id="cOut">0개</b></button>
@@ -144,7 +145,7 @@ const CATS = {
 };
 const TABS = [...Object.keys(CATS), '쇼핑'];
 const TAB_ICON = {'식재료':'🥬','약':'💊','생활용품':'🧻','쇼핑':'🛒'};
-const S = {tab:'식재료', sub:'전체', items:[], shop:[], code:'home', outAsc:true, sort:localStorage.getItem('bm_sort')||'at', toTop:false};
+const S = {tab:'식재료', sub:'전체', items:[], shop:[], code:'home', outAsc:true, sort:localStorage.getItem('bm_sort')||'at', dir:localStorage.getItem('bm_dir')||((localStorage.getItem('bm_sort')||'at')==='at'?'desc':'asc'), toTop:false};
 const $ = id => document.getElementById(id);
 const esc = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,8);
@@ -220,13 +221,16 @@ function renderPaperInner(){
   }
   const subs = Object.keys(CATS[S.tab].subs);
   let list = S.items.filter(i=>i.cat===S.tab && (S.sub==='전체'||i.sub===S.sub));
+  const dir = S.dir==='asc' ? 1 : -1;
   const CMP = {
-    at:(a,b)=>b.at-a.at,
-    name:(a,b)=>a.name.localeCompare(b.name,'ko')||b.at-a.at,
-    exp:(a,b)=>(a.exp?0:1)-(b.exp?0:1)||(a.exp||'').localeCompare(b.exp||'')||b.at-a.at
+    at:(a,b)=>(a.at-b.at)*dir,
+    name:(a,b)=>(a.name.localeCompare(b.name,'ko')*dir)||(b.at-a.at),
+    exp:(a,b)=>(a.exp?0:1)-(b.exp?0:1)||((a.exp||'').localeCompare(b.exp||'')*dir)||(b.at-a.at)
   };
   list.sort(CMP[S.sort]||CMP.at);
-  const sortbar = `<div class="sortbar"><span>정렬</span>${[['at','등록순'],['name','가나다순'],['exp','유통기한순']].map(([k,l])=>`<button class="so ${S.sort===k?'on':''}" data-o="${k}">${l}</button>`).join('')}</div>`;
+  const CAP = {at:['오래된 등록이 위','최근 등록이 위'], name:['ㄱ → ㅎ','ㅎ → ㄱ'], exp:['임박한 것이 위','늦은 것이 위']};
+  const arrow = k => S.sort===k ? (S.dir==='asc' ? ' ▲' : ' ▼') : '';
+  const sortbar = `<div class="sortbar"><span>정렬</span>${[['at','등록순'],['name','가나다순'],['exp','유통기한순']].map(([k,l])=>`<button class="so ${S.sort===k?'on':''}" data-o="${k}" aria-label="${l}${S.sort===k?(S.dir==='asc'?' 오름차순':' 내림차순'):''}">${l}${arrow(k)}</button>`).join('')}</div><div class="cap">${(CAP[S.sort]||CAP.at)[S.dir==='asc'?0:1]}</div>`;
   const cnt = x => S.items.filter(i=>i.cat===S.tab && (x==='전체'||i.sub===x)).length;
   const rows = Math.ceil(subs.length/3);
   p.innerHTML = `<div class="subs"><button class="sb all ${S.sub==='전체'?'on':''}" data-s="전체" style="grid-row:span ${rows}"><span class="e">${CATS[S.tab].icon}</span>전체<small>${cnt('전체')}개</small></button>${subs.map(x=>`<button class="sb ${x===S.sub?'on':''}" data-s="${x}"><span class="e">${CATS[S.tab].subs[x]}</span>${x}<small>${cnt(x)}</small></button>`).join('')}</div>`
@@ -238,7 +242,7 @@ function render(){ renderTabs(); renderChips(); renderPaper(); $('fab').hidden =
 $('tabs').onclick = e => { const b=e.target.closest('[data-t]'); if(b){ S.tab=b.dataset.t; S.sub='전체'; S.toTop=true; render(); } };
 $('paper').onclick = e => {
   const sb = e.target.closest('[data-s]'); if(sb){ S.sub=sb.dataset.s; S.toTop=true; renderPaper(); return; }
-  const so = e.target.closest('[data-o]'); if(so){ S.sort=so.dataset.o; localStorage.setItem('bm_sort',S.sort); S.toTop=true; renderPaper(); return; }
+  const so = e.target.closest('[data-o]'); if(so){ const k=so.dataset.o; if(S.sort===k){ S.dir=S.dir==='asc'?'desc':'asc'; } else { S.sort=k; S.dir=(k==='at')?'desc':'asc'; } localStorage.setItem('bm_sort',S.sort); localStorage.setItem('bm_dir',S.dir); S.toTop=true; renderPaper(); return; }
   if(e.target.id==='clearDone'){ S.shop.filter(s=>s.done).forEach(s=>store.del('shop',s.id)); return; }
   const a = e.target.closest('[data-a]'); if(!a) return;
   const row = a.closest('[data-id]'); const id = row.dataset.id;
@@ -273,7 +277,7 @@ $('fItem').onsubmit = e => {
   e.preventDefault();
   const name = $('fName').value.trim(); if(!name) return;
   const o = {id: editing?.id || uid(), cat:$('fCat').value, sub:$('fSub').value, name, qty:Math.max(0,Number($('fQty').value)||0), unit:$('fUnit').value.trim(), exp:$('fExp').value, memo:$('fMemo').value.trim(), at: editing?.at || Date.now()};
-  store.put('items',o); S.tab=o.cat; S.sub='전체'; if(!editing){ S.sort='at'; localStorage.setItem('bm_sort','at'); S.toTop=true; } render(); $('dItem').close(); toast('저장했어요');
+  store.put('items',o); S.tab=o.cat; S.sub='전체'; if(!editing){ S.sort='at'; S.dir='desc'; localStorage.setItem('bm_sort','at'); localStorage.setItem('bm_dir','desc'); S.toTop=true; } render(); $('dItem').close(); toast('저장했어요');
 };
 
 function renderOut(){
