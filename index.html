@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>비움채움</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4B5A2A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="비움채움">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#EFE6CF;--paper:#FBF7EA;--olive:#4B5A2A;--tan:#D3CBB1;--ink:#3E3624;--mute:#6B6149;--clay:#F6D9B8;--clayink:#6E3416;--sage:#D9E3BE;--hot:#9A3F1E}
@@ -310,6 +318,7 @@ $('mode').textContent = useFB ? '🔄 가족과 실시간으로 연결돼 있어
 
 addEventListener('resize',()=>document.querySelectorAll('.list').forEach(limit5));
 if(document.fonts) document.fonts.ready.then(()=>document.querySelectorAll('.list').forEach(limit5));
+if('serviceWorker' in navigator) addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 render();
 store.init(S.code, v=>{S.items=v.map(norm);render();}, v=>{S.shop=v;render();}).catch(e=>{console.error(e);toast('연결에 실패했어요');});
 </script>
