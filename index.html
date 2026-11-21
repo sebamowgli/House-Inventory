@@ -70,6 +70,7 @@ dialog h2{margin:0 0 12px;font-size:22px;color:var(--olive)}
 .f label{display:grid;gap:4px;font-size:14px;color:var(--mute)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .time{font-size:13px;color:var(--mute)}
+.err{color:var(--hot);font-size:13px}
 .btns{display:flex;gap:8px;margin-top:6px}.btns .btn{flex:1}
 .mode{margin:10px 4px 0;font-size:12px;color:var(--mute);text-align:center}
 .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -83,7 +84,7 @@ dialog h2{margin:0 0 12px;font-size:22px;color:var(--olive)}
 <div class="app">
   <div class="hd">
     <div class="logo"><svg width="38" height="38" viewBox="0 0 36 36" aria-hidden="true"><path d="M9 15c0-10 18-10 18 0" stroke="#E9C98F" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M17 8c0-3 3-4 5-4-.5 3-2 4.5-5 4z" fill="#A8B87A"/><path d="M5 15h26l-3 15a2 2 0 0 1-2 1.6H10a2 2 0 0 1-2-1.6z" fill="#E9C98F"/><path d="M7 20h22M8 25h20M13 15l-1 16M18 15v16M23 15l1 16" stroke="#B98A4A" stroke-width="1.4" fill="none"/><path d="M5 15h26" stroke="#B98A4A" stroke-width="2.2" stroke-linecap="round"/></svg></div>
-    <div><h1>비움채움<span class="ver">Ver 5.0</span></h1><div class="sub">비우고, 채우고, 함께 챙겨요</div></div>
+    <div><h1>비움채움<span class="ver">Ver 6.0</span></h1><div class="sub">비우고, 채우고, 함께 챙겨요</div></div>
   </div>
   <div class="chips">
     <button class="chip" id="chipOut">🍽️ 먼저 비울 것<b id="cOut">0개</b></button>
@@ -116,7 +117,7 @@ dialog h2{margin:0 0 12px;font-size:22px;color:var(--olive)}
       <label>수량<input id="fQty" type="number" min="0" step="1" value="1" inputmode="numeric"></label>
       <label>단위<input id="fUnit" maxlength="6" placeholder="개, 팩, 롤"></label>
     </div>
-    <label>유통기한 (없으면 비워 두세요)<input id="fExp" type="date"></label>
+    <label>유통기한 (숫자 8자리, 없으면 비워 두세요)<input id="fExp" inputmode="numeric" maxlength="10" placeholder="예: 20261231" autocomplete="off"><span class="err" id="fExpErr" role="alert"></span></label>
     <label>메모<input id="fMemo" maxlength="40" placeholder="예: 엄마 비타민"></label>
     <div class="time" id="fTime"></div>
     <div class="btns">
@@ -140,9 +141,11 @@ const FIREBASE_CONFIG = {
 
 const CATS = {
   '식재료': {icon:'🥬', subs:{'냉장':'🥬','냉동':'❄️','김치냉장고':'🫙','실온':'🥫','반찬':'🍱','간식':'🍪'}},
-  '약': {icon:'💊', subs:{'알약':'💊','물약':'🧪','보충제':'🌿','파스':'🩹','기타':'📦'}},
-  '생활용품': {icon:'🧻', subs:{'소모품':'🧻','기기':'🔌'}}
+  '약': {icon:'💊', subs:{'알약':'💊','물약':'🧪','보충제':'🌿','연고':'🧴','파스':'🩹','기타의약품':'🩺'}},
+  '생활용품': {icon:'🧻', subs:{'청소':'🧹','세탁':'🧺','위생':'🧼','포장':'📦','문구':'✏️','잡화':'🛍️'}}
 };
+const MIG = {'생활용품':{'소모품':'청소','기기':'세탁'},'약':{'기타':'기타의약품'}};
+const norm = i => ({...i, sub:(MIG[i.cat]||{})[i.sub]||i.sub});
 const TABS = [...Object.keys(CATS), '쇼핑'];
 const TAB_ICON = {'식재료':'🥬','약':'💊','생활용품':'🧻','쇼핑':'🛒'};
 const S = {tab:'식재료', sub:'전체', items:[], shop:[], code:'home', outAsc:true, sort:localStorage.getItem('bm_sort')||'at', dir:localStorage.getItem('bm_dir')||((localStorage.getItem('bm_sort')||'at')==='at'?'desc':'asc'), toTop:false};
@@ -265,18 +268,26 @@ function openItem(it){
   $('fCat').value = it ? it.cat : S.tab; fillSubs();
   $('fSub').value = it ? it.sub : (S.sub!=='전체' ? S.sub : $('fSub').options[0].value);
   $('fName').value = it?.name||''; $('fQty').value = it?.qty ?? 1; $('fUnit').value = it?.unit||'';
-  $('fExp').value = it?.exp||''; $('fMemo').value = it?.memo||'';
+  $('fExp').value = it?.exp||''; $('fExpErr').textContent=''; $('fMemo').value = it?.memo||'';
   $('fTime').textContent = it ? `등록 시간 ${ft(it.at)}` : `등록 시간 ${ft(Date.now())} (자동)`;
   $('fDel').hidden = !it;
   $('dItem').showModal(); $('fName').focus();
 }
 $('fab').onclick = () => openItem(null);
+$('fExp').addEventListener('input',()=>{ const g=$('fExp').value.replace(/\D/g,'').slice(0,8); $('fExp').value = g.slice(0,4)+(g.length>4?'-'+g.slice(4,6):'')+(g.length>6?'-'+g.slice(6,8):''); });
 $('fCancel').onclick = () => $('dItem').close();
 $('fDel').onclick = () => { if(editing && confirm(`"${editing.name}"을(를) 삭제할까요?`)){ store.del('items',editing.id); $('dItem').close(); } };
 $('fItem').onsubmit = e => {
   e.preventDefault();
   const name = $('fName').value.trim(); if(!name) return;
-  const o = {id: editing?.id || uid(), cat:$('fCat').value, sub:$('fSub').value, name, qty:Math.max(0,Number($('fQty').value)||0), unit:$('fUnit').value.trim(), exp:$('fExp').value, memo:$('fMemo').value.trim(), at: editing?.at || Date.now()};
+  const dg = $('fExp').value.replace(/\D/g,''); let expVal = '';
+  if(dg){
+    const y=+dg.slice(0,4), m=+dg.slice(4,6), d=+dg.slice(6,8), t=new Date(y,m-1,d);
+    if(dg.length!==8 || t.getFullYear()!==y || t.getMonth()!==m-1 || t.getDate()!==d){ $('fExpErr').textContent='날짜를 확인해 주세요. 숫자 8자리로 적어요. (예: 20261231)'; $('fExp').focus(); return; }
+    expVal = `${dg.slice(0,4)}-${dg.slice(4,6)}-${dg.slice(6,8)}`;
+  }
+  $('fExpErr').textContent='';
+  const o = {id: editing?.id || uid(), cat:$('fCat').value, sub:$('fSub').value, name, qty:Math.max(0,Number($('fQty').value)||0), unit:$('fUnit').value.trim(), exp:expVal, memo:$('fMemo').value.trim(), at: editing?.at || Date.now()};
   store.put('items',o); S.tab=o.cat; S.sub='전체'; if(!editing){ S.sort='at'; S.dir='desc'; localStorage.setItem('bm_sort','at'); localStorage.setItem('bm_dir','desc'); S.toTop=true; } render(); $('dItem').close(); toast('저장했어요');
 };
 
@@ -300,7 +311,7 @@ $('mode').textContent = useFB ? '🔄 가족과 실시간으로 연결돼 있어
 addEventListener('resize',()=>document.querySelectorAll('.list').forEach(limit5));
 if(document.fonts) document.fonts.ready.then(()=>document.querySelectorAll('.list').forEach(limit5));
 render();
-store.init(S.code, v=>{S.items=v;render();}, v=>{S.shop=v;render();}).catch(e=>{console.error(e);toast('연결에 실패했어요');});
+store.init(S.code, v=>{S.items=v.map(norm);render();}, v=>{S.shop=v;render();}).catch(e=>{console.error(e);toast('연결에 실패했어요');});
 </script>
 </body>
 </html>
